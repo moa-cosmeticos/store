@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moa Cosmeticos - Maquillaje, Belleza y Accesorios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .modal-fade-in {
+            animation: fadeIn 0.25s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-pink-50/40 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+<button onclick="toggleCart()" class="fixed bottom-6 right-6 z-40 bg-pink-600 hover:bg-pink-700 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition active:scale-95 group">
+    <i class="fa-solid fa-cart-shopping text-xl"></i>
+    <span id="cartCount" class="absolute -top-1 -right-1 bg-rose-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-md">0</span>
+</button>
+
+<div id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="toggleCart()"></div>
+    <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+        <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col">
+            <div class="p-6 bg-rose-900 text-white flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-cart-shopping text-pink-300 text-lg"></i>
+                    <h2 class="text-lg font-bold">Tu Carrito / Pedido</h2>
+                </div>
+                <button onclick="toggleCart()" class="text-pink-200 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-6 space-y-4 divide-y divide-slate-100">
+            </div>
+
+            <div class="p-6 bg-slate-50 border-t border-slate-200 space-y-4">
+                <div class="flex items-center justify-between text-lg font-bold text-slate-900">
+                    <span>Total estimado:</span>
+                    <span id="cartTotal" class="text-pink-600">S/. 0.00</span>
+                </div>
+                <button onclick="checkoutWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-2xl transition shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-3 text-sm">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Enviar pedido por WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<header class="bg-white/90 backdrop-blur-md border-b border-pink-100 sticky top-0 z-30 shadow-sm py-2">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-2">
+
+        <div class="flex items-center justify-between w-full md:w-auto">
+            <div class="flex items-center gap-2.5">
+
+
+                    <img class="w-40 h-auto object-contain" src="src/images/logo2.png" alt="logo"/>
+
+            </div>
+
+            <div class="md:hidden flex items-center gap-2">
+                <span class="text-xs font-semibold text-slate-500 bg-pink-50 px-2.5 py-1 rounded-full border border-pink-100">Catálogo ✨</span>
+            </div>
+        </div>
+
+        <nav class="w-full md:w-auto overflow-x-auto no-scrollbar py-1">
+            <div class="flex items-center gap-2 md:gap-3">
+                <button onclick="filterCategory('all')" id="btn-all" class="category-btn px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md shadow-pink-500/20 whitespace-nowrap flex items-center gap-2 flex-shrink-0">
+                    <i class="fa-solid fa-border-all"></i> Todo
+                </button>
+                <!-- <button onclick="filterCategory('mas-vendido')" id="btn-mas-vendido" class="category-btn px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition bg-pink-50/80 text-pink-700 hover:bg-pink-100 whitespace-nowrap flex items-center gap-2 flex-shrink-0">
+                    <i class="fa-solid fa-fire text-rose-500"></i> Promociones ✨
+                </button> -->
+                <button onclick="filterCategory('labiales')" id="btn-labiales" class="category-btn px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition bg-pink-50/80 text-pink-700 hover:bg-pink-100 whitespace-nowrap flex items-center gap-2 flex-shrink-0">
+                    <i class="fa-solid fa-heart text-rose-500"></i> Labiales 💋
+                </button>
+                <button onclick="filterCategory('rostro')" id="btn-rostro" class="category-btn px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition bg-pink-50/80 text-pink-700 hover:bg-pink-100 whitespace-nowrap flex items-center gap-2 flex-shrink-0">
+                    <i class="fa-solid fa-face-smile text-rose-500"></i> Rostro 🌟
+                </button>
+                <button onclick="filterCategory('ojos')" id="btn-ojos" class="category-btn px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition bg-pink-50/80 text-pink-700 hover:bg-pink-100 whitespace-nowrap flex items-center gap-2 flex-shrink-0">
+                    <i class="fa-solid fa-eye text-rose-500"></i> Ojos 👀
+                </button>
+                <button onclick="filterCategory('skincare')" id="btn-skincare" class="category-btn px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition bg-pink-50/80 text-pink-700 hover:bg-pink-100 whitespace-nowrap flex items-center gap-2 flex-shrink-0">
+                    <i class="fa-solid fa-spa text-rose-500"></i> Skincare 💧
+                </button>
+                <button onclick="filterCategory('accesorios')" id="btn-accesorios" class="category-btn px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition bg-pink-50/80 text-pink-700 hover:bg-pink-100 whitespace-nowrap flex items-center gap-2 flex-shrink-0">
+                    <i class="fa-solid fa-bag-shopping text-rose-500"></i> Accesorios 👜
+                </button>
+                <button onclick="filterCategory('cabello')" id="btn-cabello" class="category-btn px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition bg-pink-50/80 text-pink-700 hover:bg-pink-100 whitespace-nowrap flex items-center gap-2 flex-shrink-0">
+                    <i class="fa-solid fa-bag-shopping text-rose-500"></i> Cabello 👜
+                </button>
+            </div>
+        </nav>
+
+    </div>
+</header>
+<!-- <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full">
+    <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-pink-400 via-rose-300 to-pink-500 py-10 px-6 sm:px-12 text-white shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="relative z-10 text-center md:text-left space-y-2">
+            <span class="bg-white/30 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Colección 2026</span>
+            <h2 class="text-2xl sm:text-4xl font-black tracking-tight">Realza tu belleza natural</h2>
+            <p class="text-xs sm:text-sm text-pink-50 max-w-lg font-medium">Productos de alta calidad para que brilles todos los días. Envíos seguros y atención directa.</p>
+        </div>
+        <div class="relative z-10 flex-shrink-0">
+            <button onclick="filterCategory('mas-vendido')" class="bg-white text-pink-600 hover:bg-pink-50 font-bold px-6 py-3 rounded-2xl shadow-md transition text-sm flex items-center gap-2">
+                <span>Promociones</span> <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+</section> -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full">
+    <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-rose-900 via-rose-700 to-pink-500 text-white shadow-xl flex flex-col md:flex-row items-stretch justify-between min-h-[340px]">
+
+        <!-- Textura / Patrón de fondo -->
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none z-0"></div>
+
+        <!-- Contenido de Texto (Izquierda) -->
+        <div class="relative z-10 p-8 sm:p-12 md:w-1/2 lg:w-3/5 flex flex-col justify-center items-center md:items-start text-center md:text-left space-y-4">
+            <span class="inline-block bg-white/20 backdrop-blur-md text-pink-100 text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-widest border border-white/20">
+                Colección 2026
+            </span>
+
+            <h2 class="text-3xl sm:text-5xl font-serif font-bold tracking-tight text-white leading-tight">
+                Realza Tu Belleza Única
+            </h2>
+
+            <p class="text-xs sm:text-sm text-rose-100 max-w-md font-normal leading-relaxed opacity-90">
+                Productos de alta calidad para que brilles todos los días. Envíos seguros y atención directa.
+            </p>
+
+            <div class="pt-3">
+                <button onclick="filterCategory('mas-vendido')"
+                        class="bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/40 text-white font-semibold px-7 py-3 rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 uppercase text-xs tracking-wider inline-flex items-center gap-3 group">
+                    <span>Explorar la colección</span>
+                    <i class="fa-solid fa-arrow-right transition-transform duration-300 group-hover:translate-x-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Imagen de Portada / Modelo (Derecha) -->
+        <div class="relative w-full md:w-1/2 lg:w-2/5 min-h-[260px] md:min-h-full overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=1000&auto=format&fit=crop"
+                 alt="Modelo Belleza MOA"
+                 class="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105" />
+
+            <!-- Degradado para integrar suavemente la imagen con el fondo -->
+            <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-rose-900 via-rose-900/40 to-transparent"></div>
+        </div>
+
+    </div>
+</section>
+
+<main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-12">
+    <div id="catalogContainer"></div>
+</main>
+
+<div id="productModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center hidden overflow-y-auto sm:pt-0 lg:pt-0 pt-40">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden modal-fade-in relative border border-slate-100">
+        <button onclick="closeModal()" class="absolute top-4 right-4 bg-slate-100 hover:bg-slate-200 text-slate-600 w-10 h-10 rounded-full flex items-center justify-center transition z-10 shadow-sm">
+            <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+        <div id="modalContent" class="grid grid-cols-1 md:grid-cols-2"></div>
+    </div>
+</div>
+
+<footer class="bg-white text-slate-600 mt-16 py-10 border-t border-pink-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+        <div>
+            <h3 class="text-xl font-bold text-slate-800 tracking-tight">Moa Cosmeticos</h3>
+            <p class="text-sm text-slate-500 mt-1">Los mejores productos de maquillaje y belleza directo a tu puerta con atención rápida por WhatsApp.</p>
+        </div>
+        <div class="text-sm text-slate-400">
+            &copy; 2026 Moa Cosmeticos. Todos los derechos reservados.
+        </div>
+    </div>
+</footer>
+
+<script>
+    const products = [
+        { id: 1, name: "Iluminador Compacto Diamond Glow", category: "mas-vendido", categoryName: "Lo más vendido", price: "S/. 32.00", numericPrice: 32.00, image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&auto=format&fit=crop&q=60", description: "Dale un brillo tridimensional a tus pómulos con este iluminador de textura sedosa y acabado radiante." },
+        { id: 2, name: "Sombra Sweet", category: "ojos", categoryName: "Ojos", price: "S/. 10.90", numericPrice: 10.90, image: "src/images/ojos/om-01.jpeg", description: "Paleta con 18 tonos altamente pigmentados entre mates y brillantes, ideales para crear looks de día y de noche con larga duración." },
+        { id: 3, name: "Lapiz para Cejas", category: "ojos", categoryName: "Ojos", price: "S/. 2.90", numericPrice: 2.90, image: "src/images/ojos/om-02.jpeg", description: "Lápiz para cejas con cepillo integrador para definir, rellenar y peinar con precisión y acabado natural.\n" +
+                "\n" +
+                "Nota del producto: La imagen es referencial; el precio equivale a una (1) unidad." },
+        { id: 4, name: "Glitter Brillante", category: "ojos", categoryName: "Ojos", price: "S/. 4.90", numericPrice: 4.90, image: "src/images/ojos/om-03.jpeg", description: "Gel con destellos deslumbrantes para aportar un toque de brillo radiante y deslumbrante a tu mirada." },
+        { id: 5, name: "Sombra Queens", category: "ojos", categoryName: "Ojos", price: "S/. 9.90", numericPrice: 9.90, image: "src/images/ojos/om-04.jpeg", description: "Paleta de Sombras con hermosos tonos coordinados en acabados mate y deslumbrantes. Perfecta para resaltar la mirada con elegancia y elegancia diaria." },
+        { id: 6, name: "Mascara de pestañas extralarga", category: "ojos", categoryName: "ojos", price: "S/. 7.90", numericPrice: 7.90, image: "src/images/labiales/lm-01.jpeg", description: "Máscara diseñada para aportar mayor volumen, densidad y definición a tus pestañas, logrando una mirada impactante y de larga duración. Nota del producto: La imagen es referencial; el precio equivale a una (1) unidad." },
+
+        { id: 7, name: "Lip Gloss Moisture Lip Oil", category: "labiales", categoryName: "Labiales", price: "S/. 4.90", numericPrice: 4.90, image: "src/images/labiales/lm-05.jpeg", description: "✨ Brillo y nutrición en un solo toque. Dale a tus labios un acabado jugoso y suave que enamora. Nota importante: La imagen es referencial; el precio corresponde a una (1) sola unidad. " },
+        { id: 8, name: "Labial de brillo Jarusa", category: "labiales", categoryName: "Labiales", price: "S/. 5.90", numericPrice: 5.90, image: "src/images/labiales/lm-03.jpeg", description: "💋 Un toque de color, mucho brillo. Luce unos labios irresistibles y llenos de vida durante todo el día. Nota importante: La imagen es referencial; el precio corresponde a una (1) sola unidad. " },
+        { id: 9, name: "Labial Bálsamo Fruity Shine", category: "labiales", categoryName: "Labiales", price: "S/. 5.90", numericPrice: 5.90, image: "src/images/labiales/lm-04.jpeg", description: "🍓 Color + hidratación + dulzura. Un bálsamo con acabado brillante para consentir tus labios. Nota importante: La imagen es referencial; el precio corresponde a una (1) sola unidad. " },
+        { id: 10, name: "Labial hidratante Strawberry", category: "labiales", categoryName: "Labiales", price: "S/. 2.90", numericPrice: 2.90, image: "src/images/labiales/lm-02.jpeg", description: "🍓 Pequeño, lindo e irresistible. Hidrata tus labios y déjalos suaves con un toque divertido de color." },
+        { id: 11, name: "Labial Matte Sexy", category: "labiales", categoryName: "Labiales", price: "S/. 4.90", numericPrice: 4.90, image: "src/images/labiales/lm-06.jpeg", description: "💄 Color intenso y acabado mate para una mirada que no pasa desapercibida." },
+        { id: 12, name: "Labial Gagk Velvet Soft Mist Mud - 24 Hs", category: "labiales", categoryName: "Labiales", price: "S/. 10.90", numericPrice: 10.90, image: "src/images/labiales/lm-07.jpeg", description: "💕 Suave, elegante y aterciopelado. Un toque de color que realza tu belleza. Nota importante: La imagen es referencial; el precio corresponde a una (1) sola unidad. " },
+        { id: 13, name: "Labial Gagk Velvet Soft Mist Lip Mud - 24 Hs", category: "labiales", categoryName: "Labiales", price: "S/. 10.90", numericPrice: 10.90, image: "src/images/labiales/lm-08.jpeg", description: "🌷 Textura ligera y acabado velvet para unos labios suaves y encantadores. Nota importante: La imagen es referencial; el precio corresponde a una (1) sola unidad. " },
+        { id: 14, name: "Labial Líquido Matte Larga Duración", category: "labiales", categoryName: "Labiales", price: "S/. 10.90", numericPrice: 10.90, image: "src/images/labiales/lm-09.jpeg", description: "✨ Color que te acompaña por horas para que solo te preocupes por disfrutar." },
+        { id: 15, name: "LipGloss", category: "labiales", categoryName: "Labiales", price: "S/. 3.50", numericPrice: 3.50, image: "src/images/labiales/lm-10.jpeg", description: "Brillo labial de textura ligera y suave que aporta un toque deslumbrante de brillo y color a tus labios, manteniéndolos hidratados.   Nota importante: La imagen es referencial; el precio corresponde a una (1) sola unidad." },
+        { id: 16, name: "Lip Oil Magic Shine", category: "labiales", categoryName: "Labiales", price: "S/. 3.50", numericPrice: 3.50, image: "src/images/labiales/lm-11.jpeg", description: "Aceite labial hidratante con un toque mágico de brillo y lindo empaque en forma de corazón, ideal para nutrir tus labios y lucir un acabado jugoso." },
+        { id: 17, name: "lip Oil Magic", category: "labiales", categoryName: "Labiales", price: "S/. 3.50", numericPrice: 3.50, image: "src/images/labiales/lm-12.jpeg", description: "Aceite labial con destellos de brillo que reacciona con la temperatura de tus labios para brindar una hidratación profunda y un tono radiante.   Nota importante: La imagen es referencial; el precio corresponde a una (1) sola unidad." },
+        { id: 18, name: "Gloss Honey Milk", category: "labiales", categoryName: "Labiales", price: "S/. 3.50", numericPrice: 3.50, image: "src/images/labiales/lm-13.jpeg", description: "Brillo labial ultra nutritivo enriquecido con extractos de miel y leche para suavizar, acondicionar y darle un brillo impecable a tu sonrisa." },
+        { id: 19, name: "Labial Líquido", category: "labiales", categoryName: "Labiales", price: "S/. 3.50", numericPrice: 3.50, image: "src/images/labiales/lm-14.jpeg", description: "Labial líquido de textura liviana que brinda un color suave e hidratación instantánea para lucir unos labios frescos durante el día.   Nota importante: La imagen es referencial; el precio corresponde a una (1) sola unidad. " },
+
+        { id: 20, name: "Base en Crema con Cushion", category: "rostro", categoryName: "Rostro", price: "S/. 11.90", numericPrice: 11.90, image: "src/images/rostro/rm-09.jpeg", description: "Cobertura perfecta y acabado radiante en segundos para lucir una piel de porcelana. Su formato compacto es ideal para retocarte y brillar en cualquier lugar." },
+        { id: 21, name: "Fijador Rosse", category: "rostro", categoryName: "Rostro", price: "S/. 12.90", numericPrice: 12.90, image: "src/images/rostro/rm-01.jpeg", description: "Sella tu maquillaje con una delicada bruma refrescante que prolonga la duración de tu look. Mantén tu rostro intacto, fresco y sin necesidad de retoques por horas." },
+        { id: 22, name: "Base Líquida", category: "rostro", categoryName: "Rostro", price: "S/. 7.90", numericPrice: 7.90, image: "src/images/rostro/rm-10.jpeg", description: "Textura ligera que se funde naturalmente para unificar el tono de tu rostro al instante. El equilibrio perfecto entre cobertura y ligereza para tu rutina diaria." },
+        { id: 23, name: "Mascarilla facial", category: "rostro", categoryName: "Rostro", price: "S/. 2.50", numericPrice: 2.50, image: "src/images/rostro/rm-02.jpeg", description: "Un verdadero spa en casa para consentir tu cutis. Revitaliza, hidrata profundamente y devuelve a tu piel ese brillo saludable y descansado en solo minutos.Nota importante: La imagen es referencial; el precio corresponde a una (1) sola unidad. " },
+        { id: 24, name: "Exfoliante de cara y cuerpo", category: "rostro", categoryName: "Rostro", price: "S/. 8.90", numericPrice: 8.90, image: "src/images/rostro/rm-03.jpeg", description: " Exfoliante suave formulado para remover impurezas y células muertas, dejando la piel tersa, renovada y con un aroma delicioso.   Nota importante: Imagen referencial. El precio corresponde a una (1) sola unidad." },
+        { id: 25, name: "Tattoo Eye Brow Gel", category: "rostro", categoryName: "Rostro", price: "S/. 7.90", numericPrice: 7.90, image: "src/images/rostro/rm-04.jpeg", description: "Gel teñidor de larga duración para cejas perfectas, pigmentadas y definidas por más tiempo sin necesidad de retoques constantes.   Nota importante: Imagen referencial. El precio corresponde a una (1) sola unidad." },
+        { id: 26, name: "Rubor Glow", category: "rostro", categoryName: "Rostro", price: "S/. 7.90", numericPrice: 7.90, image: "src/images/rostro/rm-05.jpeg", description: "Rubor en barra cremoso y fácil de difuminar que brinda un color natural y un acabado radiante e iluminado en las mejillas.   Nota importante: Imagen referencial. El precio corresponde a una (1) sola unidad. " },
+        { id: 27, name: "Set de Sombras + Labial Mate + Lapiz Labial", category: "rostro", categoryName: "Rostro", price: "S/. 19.90", numericPrice: 19.90, image: "src/images/rostro/rm-06.jpeg", description: "Set completo de maquillaje que incluye paleta de sombras, labial y delineador para crear looks armoniosos e impactantes en pocos pasos." },
+        { id: 28, name: "Contorno Queen", category: "rostro", categoryName: "Rostro", price: "S/. 10.90", numericPrice: 10.90, image: "src/images/rostro/rm-07.jpeg", description: "Contorno líquido de alta cobertura ideal para disimular ojeras e imperfecciones, dejando un acabado uniforme y natural en el rostro." },
+        { id: 29, name: "Rubor en polvo", category: "rostro", categoryName: "Rostro", price: "S/. 7.90", numericPrice: 7.90, image: "src/images/rostro/rm-08.jpeg", description: "Rubor en polvo compacto suave y de fácil difuminado, perfecto para darle un toque fresco y de color saludable a tus mejillas.   Nota importante: La imagen es referencial; el precio corresponde a una (1) sola unidad. " },
+
+
+        { id: 30, name: "Sérum Facial de Arroz", category: "skincare", categoryName: "Skincare", price: "S/. 10.90", numericPrice: 10.90, image: "src/images/skincare/sk-01.jpeg", description: "Sérum facial de rápida absorción que hidrata profundamente, ilumina y ayuda a suavizar las líneas de expresión." },
+        { id: 31, name: "Crema Protectora Humectante Facial y Corporal", category: "skincare", categoryName: "Skincare", price: "S/. 12.90", numericPrice: 12.90, image: "src/images/skincare/sk-02.jpeg", description: "Crema hidratante y protectora que ayuda a nutrir la piel, restaurar la humedad esencial y mantener un rostro suave durante todo el día" },
+        { id: 32, name: "Limpiador facial Cuidado Dual", category: "skincare", categoryName: "Skincare", price: "S/. 8.90", numericPrice: 8.90, image: "src/images/skincare/sk-03.jpeg", description: "Dúo de cuidado facial que limpia e hidrata la piel, removiendo impurezas mientras mantiene la piel fresca y libre de suciedad.   Nota importante: La imagen incluye crema y pañitos faciales como parte de la presentación del producto." },
+        { id: 33, name: "Mousse Facial de Arroz", category: "skincare", categoryName: "Skincare", price: "S/. 10.90", numericPrice: 10.90, image: "src/images/skincare/sk-04.jpeg", description: "Limpiador facial en espuma con cepillo aplicador integrado que limpia suavemente los poros, dejando la piel suave, fresca y radiante." },
+        { id: 34, name: "Sérum de Leche", category: "skincare", categoryName: "Skincare", price: "S/. 10.90", numericPrice: 10.90, image: "src/images/skincare/sk-05.jpeg", description: "Sérum facial nutritivo de rápida absorción que hidrata profundamente la piel, mejorando su elasticidad y suavizando líneas de expresión." },
+        { id: 35, name: "Crema + Bloqueador + Limpiador de Arroz", category: "skincare", categoryName: "Skincare", price: "S/. 39.90", numericPrice: 39.90, image: "src/images/skincare/sk-06.jpeg", description: "Kit completo de cuidado facial que combina hidratación, protección solar y limpieza profunda para mantener tu piel saludable y radiante." },
+        { id: 36, name: "Mousse Facial de Leche", category: "skincare", categoryName: "Skincare", price: "S/. 10.90", numericPrice: 10.90, image: "src/images/skincare/sk-07.jpeg", description: "Espuma limpiadora facial con cabezal de silicona integrado que remueve suavemente las impurezas, dejando el rostro limpio, fresco y suave." },
+        { id: 37, name: "Gel Exfoliante", category: "skincare", categoryName: "Skincare", price: "S/. 10.90", numericPrice: 10.90, image: "src/images/skincare/sk-08.jpeg", description: "Gel exfoliante facial 3 en 1 de arroz que hidrata, ilumina y refresca, eliminando células muertas para revelar una piel más uniforme y tersa." },
+        { id: 38, name: "Set Skin care Premiun de Rosas y Acido Hialuronico - Dr La Rosa", category: "skincare", categoryName: "Skincare", price: "S/. 55.90", numericPrice: 55.90, image: "src/images/skincare/sk-09.jpeg", description: "Set completo de cuidado facial para una rutina de belleza integral. Incluye limpiador facial, tónico, loción, sérum, crema hidratante y contorno de ojos para mantener la piel profundamente hidratada, luminosa y rejuvenecida." },
+
+        { id: 39, name: "Joyero Pinky", category: "accesorios", categoryName: "Accesorios", price: "S/. 35.90", numericPrice: 35.90, image: "src/images/accesorios/am-01.jpeg", description: "Organizador de joyas con varios cajones y compartimentos con acabado suave. Perfecto para mantener tus accesorios, anillos y cadenas ordenados y protegidos." },
+        { id: 40, name: "Satirizante", category: "accesorios", categoryName: "Accesorios", price: "S/. 8.90", numericPrice: 8.90, image: "src/images/accesorios/am-02.jpeg", description: "Atomizador portátil de mano en estuche de silicona con funda de color. Práctico y ligero para llevar tu desinfectante o alcohol a todos lados.   Nota importante: Imagen referencial. El precio corresponde a una (1) sola unidad.  " },
+        { id: 41, name: "Maletín de Maquillaje", category: "accesorios", categoryName: "Accesorios", price: "S/. 69.90", numericPrice: 69.90, image: "src/images/accesorios/am-17.jpeg", description: "Neceser de maquillaje de estructura firme con espejo LED integrado e iluminado y compartimentos ajustables. Ideal para viajar y organizar cosméticos y brochas" },
+        { id: 42, name: "Set Vincha Diadema", category: "accesorios", categoryName: "Accesorios", price: "S/. 10.90", numericPrice: 10.90, image: "src/images/accesorios/am-03.jpeg", description: "Kit de rutina facial que incluye vincha acolchada de felpa, muñequeras para absorber la humedad y gancho para el cabello. Ideal para realizar tu limpieza y cuidado diario de la piel cómodamente." },
+        { id: 43, name: "Cepillo de Cabello Redondo", category: "accesorios", categoryName: "Accesorios", price: "S/. 5.90", numericPrice: 5.90, image: "src/images/accesorios/am-04.jpeg", description: "Cepillo ovalado con cerdas de punta suave que desenredan el cabello delicadamente sin maltratarlo, proporcionando un suave masaje al cuero cabelludo." },
+        { id: 44, name: "Cepillo de Cabello Cuadraro Salon", category: "accesorios", categoryName: "Accesorios", price: "S/. 8.90", numericPrice: 8.90, image: "src/images/accesorios/am-05.jpeg", description: "Cepillo paleta ideal para desenredar melenas largas y voluminosas rápidamente, reduciendo el frizz y dejando un acabado suave y ordenado." },
+        { id: 45, name: "Duo perfume Pink", category: "accesorios", categoryName: "Accesorios", price: "S/. 20.90", numericPrice: 20.90, image: "src/images/accesorios/am-06.jpeg", description: "Set de fragancia corporal que incluye perfume y crema perfumada para mantener un aroma fresco, dulce y duradero durante todo el día." },
+        { id: 46, name: "Duo perfume Pink Cutie ", category: "accesorios", categoryName: "Accesorios", price: "S/. 20.90", numericPrice: 20.90, image: "src/images/accesorios/am-07.jpeg", description: "Dúo perfumado de loción y crema corporal con notas delicadas y femeninas, ideal para hidratar la piel y envolverla en un suave aroma." },
+        { id: 47, name: "Duo perfume Love", category: "accesorios", categoryName: "Accesorios", price: "S/. 20.90", numericPrice: 20.90, image: "src/images/accesorios/am-08.jpeg", description: "Set de fragancia elegante que incluye perfume y crema hidratante perfumada, perfecto para envolver tu piel en un aroma encantador y duradero." },
+        { id: 48, name: "Neceser", category: "accesorios", categoryName: "Accesorios", price: "S/. 12.90", numericPrice: 12.90, image: "src/images/accesorios/am-09.jpeg", description: "Cartuchera organizadora de cosmeticos con acabado texturizado. Ideal para llevar tus cosméticos y productos esenciales ordenados a donde vayas." },
+        { id: 49, name: "Lima de uñas", category: "accesorios", categoryName: "Accesorios", price: "S/. 2.90", numericPrice: 2.90, image: "src/images/accesorios/am-10.jpeg", description: "Lima de uñas de doble cara resistente, perfecta para moldear, dar forma y perfilar las uñas con precisión." },
+        { id: 50, name: "Secadora de cabello 5000W", category: "accesorios", categoryName: "Accesorios", price: "S/. 19.90", numericPrice: 19.90, image: "src/images/accesorios/am-11.jpeg", description: "Secadora de cabello de gran potencia con control de temperatura. Diseñada para un secado rápido, eficiente y con acabado de salón." },
+        { id: 51, name: "Ruleros", category: "accesorios", categoryName: "Accesorios", price: "S/. 2.90", numericPrice: 2.90, image: "src/images/accesorios/am-12.jpeg", description: "Set de ruleros prácticos para moldear, dar volumen y definir rizos en el cabello de forma sencilla sin dañarlo con calor.   Nota importante: La imagen es referencial; el precio corresponde a un (1) solo paquete.   " },
+        { id: 52, name: "Neceser Maletin", category: "accesorios", categoryName: "Accesorios", price: "S/. 15.90", numericPrice: 15.90, image: "src/images/accesorios/am-13.jpeg", description: "Espacioso bolso neceser estilo maletín con asa superior y acabado elegante. Ideal para transportar cosméticos, brochas y productos de cuidado personal bien organizados." },
+        { id: 53, name: "Set de Borlas", category: "accesorios", categoryName: "Accesorios", price: "S/. 5.50", numericPrice: 5.50, image: "src/images/accesorios/am-14.jpeg", description: "Juego de esponjas suaves en forma de corazón diseñadas para aplicar polvos sueltos o compactos de manera uniforme, logrando un acabado terso y difuminado." },
+        { id: 54, name: "Set de Uñas Postizas", category: "accesorios", categoryName: "Accesorios", price: "S/. 8.90", numericPrice: 8.90, image: "src/images/accesorios/am-15.jpeg", description: "Set de uñas adhesivas reutilizables y fáciles de colocar para lucir una manicura estilizada e impecable en pocos minutos.   Nota importante: La imagen es referencial; el precio corresponde a un (1) solo juego de uñas" },
+        { id: 55, name: "Kit de belleza", category: "accesorios", categoryName: "Accesorios", price: "S/. 6.90", numericPrice: 6.90, image: "src/images/accesorios/am-16.jpeg", description: "Práctico set multiusos de belleza y cuidado personal que incluye dispensador de líquido, esponjas para maquillaje, borla para polvo y cepillo para cejas o pestañas. Ideal para llevar en el bolso o de viaje." },
+
+    ];
+
+    let currentFilter = 'all';
+    let cart = [];
+    const WHATSAPP_PHONE = "51992594907";
+
+    const catalogContainer = document.getElementById('catalogContainer');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderCatalog();
+        updateCartUI();
+    });
+
+    function filterCategory(category) {
+        currentFilter = category;
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.classList.remove('bg-gradient-to-r', 'from-pink-500', 'to-rose-500', 'text-white', 'shadow-md', 'shadow-pink-500/20');
+            btn.classList.add('bg-pink-50/80', 'text-pink-700');
+        });
+        const activeBtn = document.getElementById(`btn-${category}`);
+        if (activeBtn) {
+            activeBtn.classList.remove('bg-pink-50/80', 'text-pink-700');
+            activeBtn.classList.add('bg-gradient-to-r', 'from-pink-500', 'to-rose-500', 'text-white', 'shadow-md', 'shadow-pink-500/20');
+        }
+        renderCatalog();
+    }
+
+    function renderCatalog() {
+        catalogContainer.innerHTML = '';
+        const filteredProducts = currentFilter === 'all'
+            ? products
+            : products.filter(p => p.category === currentFilter);
+
+        if (currentFilter === 'all') {
+            const categories = [
+                //{ key: 'mas-vendido', name: 'Promociones', icon: 'fa-fire' },
+                { key: 'labiales', name: 'Labiales', icon: 'fa-heart' },
+                { key: 'rostro', name: 'Rostro', icon: 'fa-face-smile' },
+                { key: 'ojos', name: 'Ojos', icon: 'fa-eye' },
+                { key: 'skincare', name: 'Skincare', icon: 'fa-spa' },
+                { key: 'accesorios', name: 'Accesorios', icon: 'fa-bag-shopping' },
+                { key: 'cabello', name: 'Cabello', icon: 'fa-bag-shopping' }
+            ];
+
+            categories.forEach(cat => {
+                const catProducts = products.filter(p => p.category === cat.key);
+                if (catProducts.length > 0) {
+                    renderCarouselSection(cat.name, cat.key, cat.icon, catProducts);
+                }
+            });
+        } else {
+            let title = 'Resultados';
+            let icon = 'fa-border-all';
+            const foundCat = products.find(p => p.category === currentFilter);
+            if (foundCat) title = foundCat.categoryName;
+            renderCarouselSection(title, currentFilter, icon, filteredProducts);
+        }
+    }
+
+    function renderCarouselSection(sectionTitle, sectionId, iconClass, items) {
+        const sectionDiv = document.createElement('div');
+        sectionDiv.className = 'space-y-4';
+
+        sectionDiv.innerHTML = `
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center font-bold text-lg shadow-sm">
+                        <i class="fa-solid ${iconClass}"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-slate-900 tracking-tight">${sectionTitle}</h2>
+                </div>
+                <div class="hidden sm:flex items-center gap-2">
+                    <button onclick="scrollCarousel('${sectionId}', 'left')" class="w-10 h-10 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 flex items-center justify-center shadow-sm transition active:scale-95">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button onclick="scrollCarousel('${sectionId}', 'right')" class="w-10 h-10 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 flex items-center justify-center shadow-sm transition active:scale-95">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="carousel-${sectionId}" class="flex gap-6 overflow-x-auto no-scrollbar pb-4 pt-2 px-1 snap-x scroll-smooth"></div>
+        `;
+
+        catalogContainer.appendChild(sectionDiv);
+        const carouselTrack = document.getElementById(`carousel-${sectionId}`);
+
+        items.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'min-w-[260px] sm:min-w-[280px] max-w-[280px] bg-white rounded-3xl shadow-sm hover:shadow-xl border border-pink-100/60 transition duration-300 flex flex-col overflow-hidden group cursor-pointer snap-start';
+            card.onclick = () => openModal(product.id);
+
+            card.innerHTML = `
+                <div class="relative w-full h-64 bg-slate-100 overflow-hidden">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+                        ${product.categoryName || 'Colección'}
+                    </span>
+                </div>
+                <div class="p-5 flex flex-col flex-grow justify-between gap-4">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base line-clamp-1 group-hover:text-pink-600 transition">${product.name}</h3>
+                        <p class="text-xs text-slate-500 mt-1 line-clamp-2">${product.description}</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                        <span class="text-lg font-black text-slate-900">${product.price}</span>
+                        <span class="bg-pink-50 text-pink-600 font-semibold text-xs px-3 py-2 rounded-xl group-hover:bg-pink-600 group-hover:text-white transition">Ver más</span>
+                    </div>
+                </div>
+            `;
+            carouselTrack.appendChild(card);
+        });
+    }
+
+    function scrollCarousel(sectionId, direction) {
+        const carousel = document.getElementById(`carousel-${sectionId}`);
+        if (carousel) {
+            const scrollAmount = direction === 'left' ? -320 : 320;
+            carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+    }
+
+    function openModal(productId) {
+        const product = products.find(p => p.id === productId);
+        if (!product) return;
+        document.body.style.overflowY = 'hidden';
+
+        const modalContent = document.getElementById('modalContent');
+        modalContent.innerHTML = `
+            <div class="relative h-96 md:h-full bg-slate-100">
+                <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
+            </div>
+            <div class="p-6 md:p-8 flex flex-col justify-between gap-6">
+                <div>
+                    <span class="bg-pink-50 text-pink-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">${product.categoryName || 'Detalle'}</span>
+                    <h2 class="text-2xl font-black text-slate-900 mt-2">${product.name}</h2>
+                    <p class="text-2xl font-bold text-pink-600 mt-1">${product.price}</p>
+                    <p class="text-sm text-slate-600 mt-4 leading-relaxed">${product.description}</p>
+                </div>
+                <div class="flex flex-col gap-3 pt-4 border-t border-slate-100">
+                    <button onclick="addToCart(${product.id})" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3.5 px-6 rounded-2xl transition shadow-lg shadow-pink-600/20 flex items-center justify-center gap-3 text-sm">
+                        <i class="fa-solid fa-cart-plus text-lg"></i> Añadir al Carrito
+                    </button>
+                    <button onclick="closeModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3 px-6 rounded-2xl transition text-sm">
+                        Seguir viendo
+                    </button>
+                </div>
+            </div>
+        `;
+        document.getElementById('productModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('productModal').classList.add('hidden');
+        document.body.style.overflowY = 'auto';
+    }
+
+    function toggleCart() {
+        const drawer = document.getElementById('cartDrawer');
+        drawer.classList.toggle('hidden');
+    }
+
+    function addToCart(productId) {
+        const product = products.find(p => p.id === productId);
+        if (!product) return;
+
+        const existingItem = cart.find(item => item.id === productId);
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({ ...product, quantity: 1 });
+        }
+
+        updateCartUI();
+        closeModal();
+        toggleCart();
+    }
+
+    function updateQuantity(productId, change) {
+        const item = cart.find(i => i.id === productId);
+        if (item) {
+            item.quantity += change;
+            if (item.quantity <= 0) {
+                cart = cart.filter(i => i.id !== productId);
+            }
+        }
+        updateCartUI();
+    }
+
+    function updateCartUI() {
+        const cartCount = document.getElementById('cartCount');
+        const cartItemsContainer = document.getElementById('cartItemsContainer');
+        const cartTotal = document.getElementById('cartTotal');
+
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItems;
+
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-64 text-center text-slate-400 gap-2">
+                    <i class="fa-solid fa-cart-shopping text-4xl mb-2 text-slate-300"></i>
+                    <p class="font-semibold text-slate-600">Tu carrito está vacío</p>
+                    <p class="text-xs">Agrega productos para armar tu pedido.</p>
+                </div>
+            `;
+            cartTotal.textContent = "S/. 0.00";
+            return;
+        }
+
+        cartItemsContainer.innerHTML = '';
+        let total = 0;
+
+        cart.forEach(item => {
+            const itemTotal = item.numericPrice * item.quantity;
+            total += itemTotal;
+
+            const div = document.createElement('div');
+            div.className = "flex items-center gap-4 py-4 first:pt-0";
+            div.innerHTML = `
+                <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-2xl bg-slate-100 flex-shrink-0">
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-slate-800 text-sm truncate">${item.name}</h4>
+                    <p class="text-xs font-bold text-pink-600 mt-0.5">${item.price}</p>
+                    <div class="flex items-center gap-3 mt-2">
+                        <button onclick="updateQuantity(${item.id}, -1)" class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition text-xs">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
+                        <span class="text-xs font-bold text-slate-700">${item.quantity}</span>
+                        <button onclick="updateQuantity(${item.id}, 1)" class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition text-xs">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            cartItemsContainer.appendChild(div);
+        });
+
+        cartTotal.textContent = `S/. ${total.toFixed(2)}`;
+    }
+
+    function checkoutWhatsApp() {
+        if (cart.length === 0) {
+            alert("Agrega al menos un producto a tu carrito para realizar el pedido.");
+            return;
+        }
+
+        let message = "Hola, me gustaría solicitar el pedido de los siguientes productos de Moa Cosmeticos:\n\n";
+        let total = 0;
+
+        cart.forEach((item, index) => {
+            const subtotal = item.numericPrice * item.quantity;
+            total += subtotal;
+            message += `${index + 1}. *${item.name}* (Cant: ${item.quantity}) - ${item.price} c/u\n`;
+        });
+
+        message += `\n*Total estimado: S/. ${total.toFixed(2)}*\n\n¿Me confirman disponibilidad y métodos de pago/envío?`;
+
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodedMessage}`;
+        window.open(whatsappUrl, '_blank');
+    }
+</script>
+</body>
+</html>
