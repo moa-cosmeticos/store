@@ -88,9 +88,9 @@
                 <button onclick="filterCategory('all')" id="btn-all" class="category-btn px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md shadow-pink-500/20 whitespace-nowrap flex items-center gap-2 flex-shrink-0">
                     <i class="fa-solid fa-border-all"></i> Todo
                 </button>
-                <!-- <button onclick="filterCategory('mas-vendido')" id="btn-mas-vendido" class="category-btn px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition bg-pink-50/80 text-pink-700 hover:bg-pink-100 whitespace-nowrap flex items-center gap-2 flex-shrink-0">
+                <button onclick="filterCategory('mas-vendido')" id="btn-mas-vendido" class="category-btn px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition bg-pink-50/80 text-pink-700 hover:bg-pink-100 whitespace-nowrap flex items-center gap-2 flex-shrink-0">
                     <i class="fa-solid fa-fire text-rose-500"></i> Promociones ✨
-                </button> -->
+                </button>
                 <button onclick="filterCategory('labiales')" id="btn-labiales" class="category-btn px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition bg-pink-50/80 text-pink-700 hover:bg-pink-100 whitespace-nowrap flex items-center gap-2 flex-shrink-0">
                     <i class="fa-solid fa-heart text-rose-500"></i> Labiales 💋
                 </button>
@@ -198,7 +198,7 @@
 
 <script>
     const products = [
-        { id: 1, name: "Iluminador Compacto Diamond Glow", category: "mas-vendido", categoryName: "Lo más vendido", price: "S/. 32.00", numericPrice: 32.00, image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&auto=format&fit=crop&q=60", description: "Dale un brillo tridimensional a tus pómulos con este iluminador de textura sedosa y acabado radiante." },
+
         { id: 2, name: "Sombra Sweet", category: "ojos", categoryName: "Ojos", price: "S/. 10.90", numericPrice: 10.90, image: "src/images/ojos/om-01.jpeg", description: "Paleta con 18 tonos altamente pigmentados entre mates y brillantes, ideales para crear looks de día y de noche con larga duración." },
         { id: 3, name: "Lapiz para Cejas", category: "ojos", categoryName: "Ojos", price: "S/. 2.90", numericPrice: 2.90, image: "src/images/ojos/om-02.jpeg", description: "Lápiz para cejas con cepillo integrador para definir, rellenar y peinar con precisión y acabado natural.\n" +
                 "\n" +
@@ -261,6 +261,11 @@
         { id: 54, name: "Set de Uñas Postizas", category: "accesorios", categoryName: "Accesorios", price: "S/. 8.90", numericPrice: 8.90, image: "src/images/accesorios/am-15.jpeg", description: "Set de uñas adhesivas reutilizables y fáciles de colocar para lucir una manicura estilizada e impecable en pocos minutos.   Nota importante: La imagen es referencial; el precio corresponde a un (1) solo juego de uñas" },
         { id: 55, name: "Kit de belleza", category: "accesorios", categoryName: "Accesorios", price: "S/. 6.90", numericPrice: 6.90, image: "src/images/accesorios/am-16.jpeg", description: "Práctico set multiusos de belleza y cuidado personal que incluye dispensador de líquido, esponjas para maquillaje, borla para polvo y cepillo para cejas o pestañas. Ideal para llevar en el bolso o de viaje." },
 
+        { id: 56, name: "Box de Maquillaje 19.90", category: "mas-vendido", categoryName: "Lo más vendido", price: "S/. 19.90", numericPrice: 19.90, image: "src/images/mas-vendido/bm-19.jpeg", description: "Práctica caja de maquillaje y cuidado personal ideal para un detalle especial o consentirte con lo esencial." },
+        { id: 57, name: "Box de Maquillaje 29.90", category: "mas-vendido", categoryName: "Lo más vendido", price: "S/. 29.90", numericPrice: 29.90, image: "src/images/mas-vendido/bm-29.jpeg", description: "Completo set de productos de belleza y skincare seleccionados para renovar tu rutina diaria con estilo." },
+        { id: 58, name: "Box de Maquillaje 49.90", category: "mas-vendido", categoryName: "Lo más vendido", price: "S/. 49.90", numericPrice: 49.90, image: "src/images/mas-vendido/bm-49.jpeg", description: "Hermosa caja de regalo temática con una variada selección de maquillaje, accesorios y artículos de cuidado facial." },
+        { id: 59, name: "Box de Maquillaje 69.90", category: "mas-vendido", categoryName: "Lo más vendido", price: "S/. 69.90", numericPrice: 69.90, image: "src/images/mas-vendido/bm-69.jpeg", description: "Exclusiva box de maquillaje premium que incluye paleta de sombras, limpiador facial, mascarillas, labiales y múltiples sorpresas para una experiencia de belleza completa." },
+
     ];
 
     let currentFilter = 'all';
@@ -296,7 +301,7 @@
 
         if (currentFilter === 'all') {
             const categories = [
-                //{ key: 'mas-vendido', name: 'Promociones', icon: 'fa-fire' },
+                { key: 'mas-vendido', name: 'Promociones', icon: 'fa-fire' },
                 { key: 'labiales', name: 'Labiales', icon: 'fa-heart' },
                 { key: 'rostro', name: 'Rostro', icon: 'fa-face-smile' },
                 { key: 'ojos', name: 'Ojos', icon: 'fa-eye' },
